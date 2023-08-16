@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "498222606440",
+    "project_id": "curso-desarrollo-movil-2023-1",
+    "storage_bucket": "curso-desarrollo-movil-2023-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498222606440:android:4473aab845af07a82bf3dd",
+        "android_client_info": {
+          "package_name": "com.icontinental.fooddeliveryapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498222606440-kms3j4csbifmeegn0skujlmsilfp2rdg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlqt6gcOcE_T2P9K4Nz4qyEv11gRPLZBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498222606440-kms3j4csbifmeegn0skujlmsilfp2rdg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

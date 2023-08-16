@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FoodDeliveryApp</string>
+    <string name="precio_regular_producto"><strike>S/ 30.00</strike> </string>
+</resources>

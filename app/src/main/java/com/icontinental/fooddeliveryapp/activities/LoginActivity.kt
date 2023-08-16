@@ -1,0 +1,84 @@
+package com.icontinental.fooddeliveryapp.activities
+
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.icontinental.fooddeliveryapp.R
+
+class LoginActivity : AppCompatActivity() {
+
+    lateinit var buttonInciarSesion: AppCompatButton
+
+    lateinit var buttonRegistrarUsuario: AppCompatButton
+
+    lateinit var editTextCorreo: EditText
+    lateinit var editTextContrasena: EditText
+
+    private lateinit var auth: FirebaseAuth
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+
+        buttonInciarSesion = findViewById(R.id.buttonIniciarSesion)
+
+        buttonRegistrarUsuario = findViewById(R.id.buttonRegistrarUsuario)
+
+        editTextCorreo = findViewById(R.id.editTextCorreoElectronico)
+
+        editTextContrasena = findViewById(R.id.editTextContrasena)
+
+        auth = Firebase.auth
+
+        buttonInciarSesion.setOnClickListener {
+
+            val correoElectronico = editTextCorreo.text.toString()
+            val contrasena = editTextContrasena.text.toString()
+
+            if (!correoElectronico.isEmpty() && !contrasena.isEmpty())  {
+                auth.signInWithEmailAndPassword(correoElectronico, contrasena)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("INICIO SESION EXITOSO", "signInWithEmail:success")
+                            val user = auth.currentUser
+//                        updateUI(user)
+                            val intent = Intent(this, MainActivity::class.java)
+
+                            startActivity(intent)
+                        } else {
+                            Log.w("ERROR INICIO SESION", "signInWithEmail:failure", task.exception)
+                            Toast.makeText(this, "Usuario o clave incorrecta", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+             else {
+                Toast.makeText(this, "Usuario o clave están vacíos", Toast.LENGTH_SHORT).show()
+             }
+
+
+        }
+
+        buttonRegistrarUsuario.setOnClickListener {
+            val intent = Intent(this, RegistrarUsuarioActivity::class.java)
+
+            startActivity(intent)
+        }
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)        }
+    }
+}
