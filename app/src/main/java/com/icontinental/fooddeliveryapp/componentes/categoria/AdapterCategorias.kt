@@ -8,13 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.icontinental.fooddeliveryapp.model.Categoria
 import com.icontinental.fooddeliveryapp.R
+import com.icontinental.fooddeliveryapp.activities.OnItemClickListener
 
-class AdapterCategorias(val lista: List<Categoria>, val context: AppCompatActivity): Adapter<ViewHolderCategorias>() {
+class AdapterCategorias(val lista: List<Categoria>, val context: AppCompatActivity, private val listener: OnItemClickListener): Adapter<ViewHolderCategorias>() {
     // El adapter naneja un listado de card y se comunica con la lista de datos
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderCategorias {
         var card = LayoutInflater.from(parent.context).inflate(R.layout.card_categoria, parent, false)
 
-        return ViewHolderCategorias(card) // Manejar un card especifico
+        return ViewHolderCategorias(card, listener) // Manejar un card especifico
     }
 
     override fun getItemCount(): Int {

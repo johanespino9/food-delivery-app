@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.icontinental.fooddeliveryapp.R
+import com.icontinental.fooddeliveryapp.activities.OnItemClickListener
 import com.icontinental.fooddeliveryapp.model.Producto
 import kotlin.coroutines.coroutineContext
 
-class AdapterProductos(val lista: List<Producto>, val context: AppCompatActivity): RecyclerView.Adapter<ViewHolderProducto>() {
+class AdapterProductos(val lista: List<Producto>, val context: AppCompatActivity, private val listener: OnItemClickListener): RecyclerView.Adapter<ViewHolderProducto>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderProducto {
         val card = LayoutInflater.from(parent.context).inflate(R.layout.card_producto, parent, false)
 
-        return ViewHolderProducto(card)
+        return ViewHolderProducto(card, listener)
     }
 
     override fun getItemCount(): Int {

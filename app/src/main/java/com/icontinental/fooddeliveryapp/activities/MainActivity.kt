@@ -27,7 +27,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.icontinental.fooddeliveryapp.model.Usuario
 
-class MainActivity : AppCompatActivity() {
+interface OnItemClickListener {
+    fun onItemClick(position: Int)
+}
+
+class MainActivity : AppCompatActivity(), OnItemClickListener {
 
     lateinit var recyclerViewCategorias: RecyclerView
 
@@ -47,6 +51,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var sharedPreference: SharedPreferences
 
+    var productos: ArrayList<Producto> = arrayListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -59,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         obtenerUsuario()
 
-        val productos = obtenerProductos()
+        obtenerProductos()
 
         val categorias = obtenerCategorias()
 
@@ -100,9 +106,9 @@ class MainActivity : AppCompatActivity() {
 
         resources.getIdentifier("ic_pizza", "drawable", packageName)
 
-        val adapter = AdapterCategorias(categorias, this)
+        val adapter = AdapterCategorias(categorias, this, this)
 
-        val adapterProductos = AdapterProductos(productos, this)
+        val adapterProductos = AdapterProductos(productos, this, this)
 
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val linearLayoutManagerProductos = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -147,8 +153,7 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    fun obtenerProductos(): ArrayList<Producto> {
-        var productos = arrayListOf<Producto>()
+    fun obtenerProductos() {
 
         db.collection("productos")
             .get()
@@ -164,7 +169,6 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.w("ERROR EN LEER DATOS", "Error getting documents.", exception)
             }
-        return productos
     }
 
     fun obtenerCategorias(): ArrayList<Categoria> {
@@ -215,5 +219,20 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Hubo un error al crear producto", Toast.LENGTH_SHORT).show()
                 Toast.makeText(this, "Error adding document: ${e}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    override fun onItemClick(position: Int) {
+        val producto = productos[position]
+        Log.d("PRODUCTO SELECCIONADO", "producto nombre${productos[position].nombre}")
+
+        val intent = Intent(this, DetalleProducto::class.java)
+
+        intent.putExtra("nombre", producto.nombre ?: "")
+        intent.putExtra("categoria", producto.categoria ?: "")
+        intent.putExtra("imagen", producto.imagen ?: "")
+        intent.putExtra("precioDescuento", producto.precioDescuento ?: 0.0)
+        intent.putExtra("precioRegular", producto.precioRegular ?: 0.0)
+
+        startActivity(intent)
     }
 }

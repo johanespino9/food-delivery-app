@@ -1,12 +1,14 @@
 package com.icontinental.fooddeliveryapp.componentes.productos
 
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.icontinental.fooddeliveryapp.R
+import com.icontinental.fooddeliveryapp.activities.OnItemClickListener
 
-class ViewHolderProducto(card: View) :RecyclerView.ViewHolder(card) {
+class ViewHolderProducto(card: View, listener: OnItemClickListener) :RecyclerView.ViewHolder(card) {
     val productoImagen: ImageView
     val productoNombre: TextView
     val productoCategoria: TextView
@@ -19,5 +21,11 @@ class ViewHolderProducto(card: View) :RecyclerView.ViewHolder(card) {
         productoCategoria = card.findViewById(R.id.textViewCategoriaProducto)
         productoPrecioDescuento = card.findViewById(R.id.textviewPrecioDescuento)
         productoPrecioRegular = card.findViewById(R.id.textviewPrecioRegular)
+
+        card.setOnClickListener {
+            val position = adapterPosition
+            listener.onItemClick(position)
+
+        }
     }
 }

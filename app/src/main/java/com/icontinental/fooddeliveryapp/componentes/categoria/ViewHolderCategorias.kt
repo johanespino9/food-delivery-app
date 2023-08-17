@@ -7,8 +7,9 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.icontinental.fooddeliveryapp.R
+import com.icontinental.fooddeliveryapp.activities.OnItemClickListener
 
-class ViewHolderCategorias(card: View): RecyclerView.ViewHolder(card) {
+class ViewHolderCategorias(card: View, private var listener: OnItemClickListener): RecyclerView.ViewHolder(card) {
     val cardFondo: ConstraintLayout
     val circuloFondoImagen: LinearLayoutCompat
     val categoriaImagen: ImageView
@@ -19,5 +20,10 @@ class ViewHolderCategorias(card: View): RecyclerView.ViewHolder(card) {
         circuloFondoImagen = card.findViewById(R.id.linearlayoutCirculoFondo)
         categoriaImagen = card.findViewById(R.id.imageViewCategoria)
         nombreCategoria = card.findViewById(R.id.textViewNombreCategoria)
+
+        card.setOnClickListener {
+            val position = adapterPosition
+            listener.onItemClick(position)
+        }
     }
 }
