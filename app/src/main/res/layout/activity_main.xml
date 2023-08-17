@@ -123,7 +123,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Hola, Chris"
+                android:text="Hola,"
                 android:textColor="@color/darkGray"
                 android:textSize="20sp"
                 android:textStyle="bold" />

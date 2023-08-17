@@ -1,6 +1,8 @@
 package com.icontinental.fooddeliveryapp.activities
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,9 +25,13 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        sharedPreferences = getSharedPreferences("USER_PREFERENCES", Context.MODE_PRIVATE)
 
         buttonInciarSesion = findViewById(R.id.buttonIniciarSesion)
 
@@ -48,8 +54,10 @@ class LoginActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("INICIO SESION EXITOSO", "signInWithEmail:success")
-                            val user = auth.currentUser
-//                        updateUI(user)
+                            sharedPreferences.edit()
+                                .putString("email", correoElectronico)
+                                .apply()
+
                             val intent = Intent(this, MainActivity::class.java)
 
                             startActivity(intent)

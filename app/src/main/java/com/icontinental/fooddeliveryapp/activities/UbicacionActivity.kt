@@ -29,8 +29,7 @@ import kotlinx.coroutines.SupervisorJob
 
 class UbicacionActivity : AppCompatActivity(), OnMapReadyCallback, PlaceSelectionListener {
 
-//    private val sharedPreference: SharedPreferences =  getSharedPreferences("USER_PREFERENCES", MODE_PRIVATE)
-
+    lateinit var sharedPreference: SharedPreferences
     lateinit var textviewNombres: TextView
     lateinit var textviewApellidos: TextView
     lateinit var textviewDireccion: TextView
@@ -38,6 +37,8 @@ class UbicacionActivity : AppCompatActivity(), OnMapReadyCallback, PlaceSelectio
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ubicacion)
+
+        sharedPreference =  getSharedPreferences("USER_PREFERENCES", MODE_PRIVATE)
 
         textviewNombres = findViewById(R.id.textviewNombresValor)
         textviewApellidos = findViewById(R.id.textviewApellidosValor)
@@ -50,9 +51,9 @@ class UbicacionActivity : AppCompatActivity(), OnMapReadyCallback, PlaceSelectio
         val apellidos = extras?.getString("apellidos")
         val direccion = extras?.getString("direccion")
 
-        textviewNombres.text = nombres
-        textviewApellidos.text = apellidos
-        textviewDireccion.text = direccion
+        textviewNombres.text = obtenerNombres()
+        textviewApellidos.text = obtenerApellidos()
+        textviewDireccion.text = obtenerDireccion()
 
         Log.d("LATITUD UBICACION ACTIVITY", "latitud: $latitud")
         Log.d("LONGITUD UBICACION ACTIVITY", "longitud: $longitud")
@@ -67,11 +68,11 @@ class UbicacionActivity : AppCompatActivity(), OnMapReadyCallback, PlaceSelectio
         mapFragment.getMapAsync {
 
 
-            it.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 17.0f))
+            it.moveCamera(CameraUpdateFactory.newLatLngZoom(obtenerLatLng(), 17.0f))
 
             it.addMarker(
                 MarkerOptions()
-                    .position(latlng)
+                    .position(obtenerLatLng())
                     .title("Mi ubicacion actual")
             )
         }
@@ -82,34 +83,64 @@ class UbicacionActivity : AppCompatActivity(), OnMapReadyCallback, PlaceSelectio
             .commit()
     }
 
-//    fun obtenerLatitud(): Double? {
-//        val latitudValue = sharedPreference.getString("latitud","defaultName").orEmpty()
-//        Log.d("MAPAS", "Latitud Value: $latitudValue")
-//        val latitud = latitudValue?.toDouble()
-//
-//        Log.d("MAPAS", "Latitud: $latitud")
-//
-//        return latitud
-//    }
+    fun obtenerNombres(): String? {
+        val nombresValue = sharedPreference.getString("nombres","").orEmpty()
+        Log.d("MAPAS", "Latitud Value: $nombresValue")
+        val nombres = nombresValue
 
-//    fun obtenerLongitud(): Double? {
-//        val longitudValue = sharedPreference.getString("longitud","defaultName").orEmpty()
-//        Log.d("MAPAS", "LongitudValue: $longitudValue")
-//        val longitud = longitudValue?.toDouble()
-//        Log.d("MAPAS", "Longitud: $longitud")
-//        return longitud
-//    }
+        Log.d("MAPAS", "Nombres: $nombres")
 
-//    fun obtenerLatLng(): LatLng {
-//
-//        val lat = obtenerLatitud()
-//        val lng = obtenerLongitud()
-//
-//        Log.d("MAPAS", "Latitud: $lat")
-//        Log.d("MAPAS", "Longitud: $lng")
-//
-//        return LatLng(lat ?: 0.0, lng ?: 0.0)
-//    }
+        return nombres
+    }
+
+    fun obtenerApellidos(): String? {
+        val apellidosValue = sharedPreference.getString("apellidos","").orEmpty()
+        Log.d("MAPAS", "Apellidos Value: $apellidosValue")
+        val apellidos = apellidosValue
+
+        Log.d("MAPAS", "Apellidos: $apellidos")
+
+        return apellidos
+    }
+
+    fun obtenerDireccion(): String? {
+        val direccionValue = sharedPreference.getString("direccion","").orEmpty()
+        Log.d("MAPAS", "direccion Value: $direccionValue")
+        val direccion = direccionValue
+
+        Log.d("MAPAS", "direccion: $direccion")
+
+        return direccion
+    }
+
+    fun obtenerLatitud(): Double? {
+        val latitudValue = sharedPreference.getString("latitud","defaultName").orEmpty()
+        Log.d("MAPAS", "Latitud Value: $latitudValue")
+        val latitud = latitudValue?.toDouble()
+
+        Log.d("MAPAS", "Latitud: $latitud")
+
+        return latitud
+    }
+
+    fun obtenerLongitud(): Double? {
+        val longitudValue = sharedPreference.getString("longitud","defaultName").orEmpty()
+        Log.d("MAPAS", "LongitudValue: $longitudValue")
+        val longitud = longitudValue?.toDouble()
+        Log.d("MAPAS", "Longitud: $longitud")
+        return longitud
+    }
+
+    fun obtenerLatLng(): LatLng {
+
+        val lat = obtenerLatitud()
+        val lng = obtenerLongitud()
+
+        Log.d("MAPAS", "Latitud: $lat")
+        Log.d("MAPAS", "Longitud: $lng")
+
+        return LatLng(lat ?: 0.0, lng ?: 0.0)
+    }
 
     override fun onMapReady(p0: GoogleMap) {
         TODO("Not yet implemented")

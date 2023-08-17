@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.widget.TintableCheckedTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,23 +37,27 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var linearlayoutUbicacion: LinearLayoutCompat
 
+    lateinit var textViewSaludo: TextView
+
     lateinit var usuario: Usuario
 
     lateinit var db: FirebaseFirestore
 
     private lateinit var auth: FirebaseAuth
 
+    lateinit var sharedPreference: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        sharedPreference = getSharedPreferences("USER_PREFERENCES", Context.MODE_PRIVATE)
 
         db = Firebase.firestore
 
         auth = Firebase.auth
 
         obtenerUsuario()
-
-//        guardarUsuarioEnMemoria(usuario)
 
         val productos = obtenerProductos()
 
@@ -60,6 +66,8 @@ class MainActivity : AppCompatActivity() {
         recyclerViewCategorias = findViewById(R.id.recyclerviewCategorias)
 
         recyclerViewProductos = findViewById(R.id.recyclerviewMasPopulares)
+
+        textViewSaludo = findViewById(R.id.textViewSaludo)
 
 //        buttonAgregarNuevoProducto = findViewById(R.id.buttonAgregarNuevoProducto)
 
@@ -108,12 +116,19 @@ class MainActivity : AppCompatActivity() {
 
     fun obtenerUsuario() {
 
+        val email = sharedPreference.getString("email", "")
+
+        Log.d("EMAIL PREFERENCES", "Email: $email")
+
         db.collection("usuarios")
-            .whereEqualTo("email", "johan.instructor@icontinental.pe")
+            .whereEqualTo("email", email)
             .get()
             .addOnSuccessListener { documents ->
                 usuario = documents.first().toObject(Usuario::class.java)
                 Log.d("OBTENER USUARIO", "${usuario?.nombres} => ${usuario?.latitud} ${usuario?.longitud}")
+                guardarUsuarioEnMemoria(usuario)
+                val nombresValue = sharedPreference.getString("nombres", "")
+                textViewSaludo.text = "Hola, $nombresValue"
             }
             .addOnFailureListener { exception ->
                 Log.e("OBTENER USUARIO", "Error getting documents: ", exception)
@@ -121,13 +136,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun guardarUsuarioEnMemoria(usuario: Usuario?) {
-
-        val sharedPreference = getSharedPreferences("USER_PREFERENCES", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
         Log.d("USUARIO LATITUD", usuario?.latitud ?: "1.1")
         Log.d("USUARIO LONGITUD", usuario?.longitud.toString())
         editor.putString("latitud",usuario?.latitud ?: "1.1")
         editor.putString("longitud",usuario?.longitud ?: "1.1")
+        editor.putString("nombres",usuario?.nombres ?: "")
+        editor.putString("apellidos",usuario?.apellidos ?: "")
+        editor.putString("direccion",usuario?.direccion ?: "")
         editor.apply()
     }
 
