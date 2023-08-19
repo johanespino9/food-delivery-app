@@ -64,17 +64,38 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonCerrarSesion"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_margin="16dp"
-            android:text="Cerrar sesión"
-            android:fontFamily="@font/poppins_extrabold"
-            android:textSize="10sp"
-            android:textColor="@color/white"
-            android:background="@drawable/layout_fondo_rojo_redondeado"/>
+            android:gravity="end">
+
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonCarrito"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_margin="16dp"
+                android:text="Carrito"
+                android:fontFamily="@font/poppins_extrabold"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:background="@drawable/layout_fondo_rojo_redondeado"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonCerrarSesion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_margin="16dp"
+                android:text="Cerrar sesión"
+                android:fontFamily="@font/poppins_extrabold"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:background="@drawable/layout_fondo_rojo_redondeado"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearlayoutContenedorUbicacion"

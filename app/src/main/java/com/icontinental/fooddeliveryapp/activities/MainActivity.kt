@@ -31,13 +31,15 @@ interface OnItemClickListener {
     fun onItemClick(position: Int)
 }
 
-class MainActivity : AppCompatActivity(), OnItemClickListener {
+class MainActivity : AppCompatActivity() {
 
     lateinit var recyclerViewCategorias: RecyclerView
 
     lateinit var recyclerViewProductos: RecyclerView
 
     lateinit var buttonCerrarSesion: AppCompatButton
+
+    lateinit var buttonCarrito: AppCompatButton
 
     lateinit var linearlayoutUbicacion: LinearLayoutCompat
 
@@ -53,9 +55,13 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
     var productos: ArrayList<Producto> = arrayListOf()
 
+    var categorias: ArrayList<Categoria> = arrayListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        var contextPrueba = this
 
         sharedPreference = getSharedPreferences("USER_PREFERENCES", Context.MODE_PRIVATE)
 
@@ -67,7 +73,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
         obtenerProductos()
 
-        val categorias = obtenerCategorias()
+        obtenerCategorias()
 
         recyclerViewCategorias = findViewById(R.id.recyclerviewCategorias)
 
@@ -79,15 +85,23 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
         buttonCerrarSesion = findViewById(R.id.buttonCerrarSesion)
 
+        buttonCarrito = findViewById(R.id.buttonCarrito)
+
         linearlayoutUbicacion = findViewById(R.id.linearlayoutUbicacion)
 
 //        buttonAgregarNuevoProducto.setOnClickListener {
-//            agregarNuevoProducto("Pizza Americana", "Pizzas", 20.0, 15.0, "ic_pizza_americana")
+//            agregarNuevoProducto(textViewSaludo.text.toString(), "Pizzas", 20.0, 15.0, "ic_pizza_americana")
 //        }
 
         buttonCerrarSesion.setOnClickListener {
             auth.signOut()
             finish()
+        }
+
+        buttonCarrito.setOnClickListener {
+            val intent = Intent(this, CarritoActivity::class.java)
+
+            startActivity(intent)
         }
 
         linearlayoutUbicacion.setOnClickListener {
@@ -106,9 +120,36 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
         resources.getIdentifier("ic_pizza", "drawable", packageName)
 
-        val adapter = AdapterCategorias(categorias, this, this)
+        val adapter = AdapterCategorias(categorias, this, object : OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                val categoria = categorias[position]
+                Log.d("CATEGORIA SELECCIONADA", "CATEGORIA nombre${categorias[position].nombre}")
 
-        val adapterProductos = AdapterProductos(productos, this, this)
+                val intent = Intent(contextPrueba, DetalleProducto::class.java)
+
+                intent.putExtra("nombre", categoria.nombre ?: "")
+                intent.putExtra("imagen", categoria.imagen ?: "")
+
+                startActivity(intent)
+            }
+        })
+
+        val adapterProductos = AdapterProductos(productos, this, object : OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                val producto = productos[position]
+                Log.d("PRODUCTO SELECCIONADO", "producto nombre${productos[position].nombre}")
+
+                val intent = Intent(contextPrueba, DetalleProducto::class.java)
+
+                intent.putExtra("nombre", producto.nombre ?: "")
+                intent.putExtra("categoria", producto.categoria ?: "")
+                intent.putExtra("imagen", producto.imagen ?: "")
+                intent.putExtra("precioDescuento", producto.precioDescuento ?: 0.0)
+                intent.putExtra("precioRegular", producto.precioRegular ?: 0.0)
+
+                startActivity(intent)
+            }
+        })
 
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val linearLayoutManagerProductos = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -171,8 +212,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             }
     }
 
-    fun obtenerCategorias(): ArrayList<Categoria> {
-        var categorias = arrayListOf<Categoria>()
+    fun obtenerCategorias() {
 
         db.collection("categorias")
             .get()
@@ -188,7 +228,6 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             .addOnFailureListener { exception ->
                 Log.w("ERROR EN LEER DATOS", "Error getting documents.", exception)
             }
-        return categorias
     }
 
     fun agregarNuevoProducto(
@@ -219,20 +258,5 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
                 Toast.makeText(this, "Hubo un error al crear producto", Toast.LENGTH_SHORT).show()
                 Toast.makeText(this, "Error adding document: ${e}", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    override fun onItemClick(position: Int) {
-        val producto = productos[position]
-        Log.d("PRODUCTO SELECCIONADO", "producto nombre${productos[position].nombre}")
-
-        val intent = Intent(this, DetalleProducto::class.java)
-
-        intent.putExtra("nombre", producto.nombre ?: "")
-        intent.putExtra("categoria", producto.categoria ?: "")
-        intent.putExtra("imagen", producto.imagen ?: "")
-        intent.putExtra("precioDescuento", producto.precioDescuento ?: 0.0)
-        intent.putExtra("precioRegular", producto.precioRegular ?: 0.0)
-
-        startActivity(intent)
     }
 }
